@@ -1,8 +1,14 @@
-# EDA of McDonalds Nutrition Facts
-
-[McDonalds NutritionFacts data source](https://github.com/pffy/data-mcdonalds-nutritionfacts)
+# EDA of McDonald's Nutrition Facts
 
 ## About the Data
+
+[McDonald's NutritionFacts data source](https://github.com/pffy/data-mcdonalds-nutritionfacts)
+
+Data from this source comes from *McDonald's USA Nutrition Facts for Popular Menu Items* on the McDonald's website
+
+McDonald's USA Nutrition Facts for Popular Menu Items
+We provide a nutrition analysis of our menu items to help you balance your McDonald's meal with other foods you eat. Our goal is to provide you with the information
+you need to make sensible decisions about balance, variety and moderation in your diet.
 
 ## Exploratory Analysis Flow
 
@@ -49,7 +55,9 @@ The unit of measure for nutrition amount varies by type; this data uses the stan
 
 I see the average g/mg values for all of the nutrition types but it doesn’t tell me much because we cannot compare the amounts of each nutrition type with different scales. To standardize this, I want to know how the nutrition values for each type compare to the daily suggested intake.
 
-*As Specified by the FDA Based on a 2,000 Calorie Intake for Adults and Children 4 or More Years of Age.* Source: [GUIDE TO NUTRITION LABELING AND EDUCATION ACT (NLEA) REQUIREMENTS-ATTACHMENT 6-8](https://www.fda.gov/ICECI/Inspections/%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20InspectionGuides/ucm114098.htm#ATTACHMENT_8)
+*As Specified by the FDA Based on a 2,000 Calorie Intake for Adults and Children 4 or More Years of Age.* 
+
+Source: [GUIDE TO NUTRITION LABELING AND EDUCATION ACT (NLEA) REQUIREMENTS-ATTACHMENT 6-8](https://www.fda.gov/ICECI/Inspections/%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20InspectionGuides/ucm114098.htm#ATTACHMENT_8)
 
 After this transformation, I want to see how the nutrition types compare to each other now. **What is the average daily intake percentage of each nutrition type for McDonalds items?**
 
@@ -63,7 +71,7 @@ This looks better and represents a more accurate comparison. This visual shows u
 
 ![Proportion of McDonalds Items That Go Above Suggested Daily Intake (Cal, Salt, Fat)](imgs/Sheet9.png)
 
-I wanted to get a feel for the proportion of items that go above what you need in a day for certain nutrition types. It's concerning to see that items that make up one meal can go over the amount you need daily. Even though the proportion is small, there are many items that have a high percentage in many nutrient types.
+I wanted to get a feel for the proportion of items that go above what you need in a day for certain nutrition types. It's concerning to see that items that make up one meal can go over the amount you need daily. Even though the proportion is small, there are many items that have a high percentage in many nutrition types.
 
 
 ## Final
@@ -71,3 +79,5 @@ I wanted to get a feel for the proportion of items that go above what you need i
 **How do the food categories of McDonalds items compare to the NutritionFacts suggested daily intake on average?**
 
 ![NutritionFacts Suggested Daily Intake of McDonalds Items by Category](imgs/Final.png)
+> Average percentage of suggested daily intake for Nutrition Type vs. Category
+
