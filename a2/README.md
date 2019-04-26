@@ -81,3 +81,4 @@ I wanted to get a feel for the proportion of items that go above what you need i
 ![NutritionFacts Suggested Daily Intake of McDonalds Items by Category](imgs/Final.png)
 > Average percentage of suggested daily intake for Nutrition Type vs. Category
 
+This heatmap shows how on average a McDonald's item will compare to the NutritionFacts suggested daily intake. A percentage will show the proportion of an average item's nutrition amount vs. suggested daily intake for each nutrition type. Redder colors encode a higher percentage of daily intake. We can observe from here that transfat for burgers has the highest ratio - on average, a burger item will have 157.03% of the suggested daily intake of transfat. The lowest percentage we see is for a HappyMeal item - on average, HappyMeals will have only 4.38% of the suggested daily intake for carbs.
