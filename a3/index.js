@@ -25,13 +25,17 @@ var color = d3.scaleOrdinal().range(['#f44242', '#52b043', '#0099e5', '#ff9900',
 d3.csv("vgsales_clipped.csv", function (error, data) {
     data.forEach(function (d, i) {
         d.Rank = i + 1;
-        d.Year = +d.Year;
+        d.Year = +d.Year_of_Release;
         d.Value = +d.Global_Sales;
         d.NA_Sales = +d.NA_Sales;
         d.EU_Sales = +d.EU_Sales;
         d.JP_Sales = +d.JP_Sales;
         d.Other_Sales = +d.Other_Sales;
         d.Global_Sales = +d.Global_Sales;
+        d.Critic_Score = +d.Critic_Score;
+        d.Critic_Count = +d.Critic_Count;
+        d.User_Score = +d.User_Score;
+        d.User_Count = +d.User_Count;
     });
 
     dataset = { children: data }
@@ -40,7 +44,7 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
 
 function drawVis(data) {
     // Filter to top
-    let dataset = {children: data.children.sort((a, b) => a.Rank - b.Rank).slice(0, maxBubbles)}
+    let dataset = { children: data.children.sort((a, b) => a.Rank - b.Rank).slice(0, maxBubbles) }
 
     var bubble = d3.pack(dataset)
         .size([diameter, diameter])
