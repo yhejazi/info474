@@ -3,6 +3,13 @@
 var dataset
 var diameter = 800;
 var maxBubbles = 50;
+var filters = {
+    year: [0, 0],
+    sales: [0, 0],
+    genre: [],
+    platform: [],
+    publisher: []
+}
 
 // Define the legend
 var legendOrdinal;
@@ -67,12 +74,11 @@ function drawVis(data) {
 
 
     node.append("circle")
-        .attr("r", function (d) {
-            return d.r;
-        })
+        .attr("r", 0)
         .style("fill", function (d) {
             return color(d.data.Publisher);
         })
+        .attr("stroke-width", 4)
         .on("mouseover", function (d) {
             // Display tooltip
             tooltip.transition()
@@ -82,13 +88,28 @@ function drawVis(data) {
             tooltip.html(d.data.Name + "<br/>" + d.data.Platform + "<br/>" + d.data.Global_Sales + "M copies<br />" + d.data.Year)
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
+            
+            // Add outline to circle
+            d3.select(this).transition()
+                .attr("stroke", d3.color(color(d.data.Publisher)).darker())
         })
         .on("mouseout", function (d) {
             // Hide tooltip		
             tooltip.transition()
                 .duration(500)
                 .style("opacity", 0);
-        });
+
+            // Remove outline
+            d3.select(this).transition()
+                .attr("stroke", "transparent")
+        })
+        .transition()
+        .delay((d, i) => i * 8)
+        .duration(250)
+        .ease(d3.easeSinOut)
+        .attr("r", function (d) {
+            return d.r;
+        })
 
     node.append("text")
         .attr("dy", ".2em")
