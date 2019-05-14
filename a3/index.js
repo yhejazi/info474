@@ -2,6 +2,7 @@
 // Define top-level variables
 var dataset
 var diameter = 800;
+var maxBubbles = 50;
 
 // Define the legend
 var legendOrdinal;
@@ -21,9 +22,9 @@ var svg = d3.select("body")
 var color = d3.scaleOrdinal().range(['#f44242', '#52b043', '#0099e5', '#ff9900', '#9f7ded']);
 
 // Load data
-d3.csv("vgsales.csv", function (error, data) {
-    data.forEach(function (d) {
-        d.Rank = +d.Rank;
+d3.csv("vgsales_clipped.csv", function (error, data) {
+    data.forEach(function (d, i) {
+        d.Rank = i + 1;
         d.Year = +d.Year;
         d.Value = +d.Global_Sales;
         d.NA_Sales = +d.NA_Sales;
@@ -37,7 +38,10 @@ d3.csv("vgsales.csv", function (error, data) {
     drawVis(dataset)
 });
 
-function drawVis(dataset) {
+function drawVis(data) {
+    // Filter to top
+    let dataset = {children: data.children.sort((a, b) => a.Rank - b.Rank).slice(0, maxBubbles)}
+
     var bubble = d3.pack(dataset)
         .size([diameter, diameter])
         .padding(1.5);
