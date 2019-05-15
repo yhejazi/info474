@@ -58,6 +58,26 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
         Math.ceil(d3.max(data, d => d.Global_Sales))
     ]
 
+    // Add options to selection filters
+    var genres = [...new Set(data.map(d => d.Genre))]
+    d3.select("#genre").selectAll("option")
+        .data(genres)
+        .enter().append("option")
+        .text(d => d)
+        
+    var platforms = [...new Set(data.map(d => d.Platform))]
+    d3.select("#platform").selectAll("option")
+        .data(platforms)
+        .enter().append("option")
+        .text(d => d)
+        
+    var publishers = [...new Set(data.map(d => d.Publisher))]
+    d3.select("#publisher").selectAll("option")
+        .data(publishers)
+        .enter().append("option")
+        .text(d => d)
+
+    // Set up filter widgets
     $(function () {
         $("#year").slider({
             range: true,
@@ -71,7 +91,6 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
             }
         });
         $("#yearval").val(filters.year[0] + " - " + filters.year[1])
-
         $("#sales").slider({
             range: true,
             min: filters.sales[0],
@@ -84,6 +103,19 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
             }
         });
         $("#salesval").val(filters.sales[0] + " - " + filters.sales[1] + " million")
+
+        $("#genre").select2().on("change", e => {
+            filters.genre = $("#genre").select2("data").map(d => d.id)
+            applyFilters()
+        })
+        $("#platform").select2().on("change", e => {
+            filters.platform = $("#platform").select2("data").map(d => d.id)
+            applyFilters()
+        })
+        $("#publisher").select2().on("change", e => {
+            filters.publisher = $("#publisher").select2("data").map(d => d.id)
+            applyFilters()
+        })
     });
 
 
@@ -101,7 +133,6 @@ function drawVis(data) {
         .sum(function (d) { return d.Global_Sales; });
 
     let nodeData = bubble(nodes).descendants().filter(d => !d.children)
-    console.log(nodeData)
     var parents = svg.selectAll(".node")
         .data(nodeData, d => d.data.Rank)
 
@@ -218,9 +249,22 @@ function drawVis(data) {
 function applyFilters() {
     var data = Object.assign({}, dataset)
 
-    // Year filter
+    // Slider filters
     data.children = data.children.filter(d => d.Year >= filters.year[0] && d.Year <= filters.year[1])
         .filter(d => d.Global_Sales >= filters.sales[0] && d.Global_Sales <= filters.sales[1])
+
+    // Selection filters
+    if (filters.genre.length > 0) {
+        data.children = data.children.filter(d => filters.genre.includes(d.Genre))
+    }
+
+    if (filters.platform.length > 0) {
+        data.children = data.children.filter(d => filters.platform.includes(d.Platform))
+    }
+
+    if (filters.publisher.length > 0) {
+        data.children = data.children.filter(d => filters.publisher.includes(d.Publisher))
+    }
 
     drawVis(data)
 }
