@@ -112,6 +112,7 @@ function drawVis(data) {
         })
 
     node.append("text")
+        .attr("class", "node-text")
         .attr("dy", ".2em")
         .style("text-anchor", "middle")
         .text(function (d) {
@@ -124,6 +125,7 @@ function drawVis(data) {
         .attr("fill", "white");
 
     node.append("text")
+        .attr("class", "node-text")
         .attr("dy", "1.3em")
         .style("text-anchor", "middle")
         .text(function (d) {
