@@ -26,3 +26,23 @@ div.tooltip {
               user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome and Opera */
 }
+
+
+#visualization {
+    float: left;
+    border-top: 0;
+    text-align: center;
+    border-right: 0px;
+}
+
+#filters {
+    width: 250px;
+    height: 100vh;
+    float: right;
+    background-color: #eee;
+    padding: 1rem;
+}
+
+.slider-group {
+    text-align: center;
+}

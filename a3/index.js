@@ -19,7 +19,7 @@ var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-var svg = d3.select("body")
+var svg = d3.select("#visualization")
     .append("svg")
     .attr("width", diameter)
     .attr("height", diameter)
@@ -46,13 +46,53 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
     });
 
     dataset = { children: data }
+
+    // Set up initial filters
+    filters.year = [
+        d3.min(data, d => d.Year),
+        d3.max(data, d => d.Year)
+    ]
+
+    filters.sales = [
+        d3.min(data, d => d.Global_Sales),
+        Math.ceil(d3.max(data, d => d.Global_Sales))
+    ]
+
+    $(function () {
+        $("#year").slider({
+            range: true,
+            min: filters.year[0],
+            max: filters.year[1],
+            values: filters.year,
+            slide: function (event, ui) {
+                $("#yearval").val(ui.values[0] + " - " + ui.values[1]);
+                filters.year = ui.values
+                applyFilters()
+            }
+        });
+        $("#yearval").val(filters.year[0] + " - " + filters.year[1])
+
+        $("#sales").slider({
+            range: true,
+            min: filters.sales[0],
+            max: filters.sales[1],
+            values: filters.sales,
+            slide: function (event, ui) {
+                $("#salesval").val(ui.values[0] + " - " + ui.values[1] + " million");
+                filters.sales = ui.values
+                applyFilters()
+            }
+        });
+        $("#salesval").val(filters.sales[0] + " - " + filters.sales[1] + " million")
+    });
+
+
     drawVis(dataset)
 });
 
 function drawVis(data) {
     // Filter to top
     let dataset = { children: data.children.sort((a, b) => a.Rank - b.Rank).slice(0, maxBubbles) }
-
     var bubble = d3.pack(dataset)
         .size([diameter, diameter])
         .padding(1.5);
@@ -60,20 +100,30 @@ function drawVis(data) {
     var nodes = d3.hierarchy(dataset)
         .sum(function (d) { return d.Global_Sales; });
 
-    var node = svg.selectAll(".node")
-        .data(bubble(nodes).descendants())
-        .enter()
-        .filter(function (d) {
-            return !d.children
-        })
+    let nodeData = bubble(nodes).descendants().filter(d => !d.children)
+
+    var parents = svg.selectAll(".node")
+        .data(nodeData, d => d.Rank)
+
+    parents.exit()
+        .select("circle")
+        .transition()
+        .attr("r", 0)
+
+    parents.exit()
+        .select("text")
+        .attr("opacity", 0)
+
+    parents.exit().transition().remove()
+
+    var parentsEnter = parents.enter()
         .append("g")
         .attr("class", "node")
         .attr("transform", function (d) {
             return "translate(" + d.x + "," + d.y + ")";
         });
 
-
-    node.append("circle")
+    parentsEnter.append("circle")
         .attr("r", 0)
         .style("fill", function (d) {
             return color(d.data.Publisher);
@@ -88,7 +138,7 @@ function drawVis(data) {
             tooltip.html(d.data.Name + "<br/>" + d.data.Platform + "<br/>" + d.data.Global_Sales + "M copies<br />" + d.data.Year)
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
-            
+
             // Add outline to circle
             d3.select(this).transition()
                 .attr("stroke", d3.color(color(d.data.Publisher)).darker())
@@ -103,15 +153,8 @@ function drawVis(data) {
             d3.select(this).transition()
                 .attr("stroke", "transparent")
         })
-        .transition()
-        .delay((d, i) => i * 8)
-        .duration(250)
-        .ease(d3.easeSinOut)
-        .attr("r", function (d) {
-            return d.r;
-        })
 
-    node.append("text")
+    parentsEnter.append("text")
         .attr("class", "node-text")
         .attr("dy", ".2em")
         .style("text-anchor", "middle")
@@ -122,9 +165,10 @@ function drawVis(data) {
         .attr("font-size", function (d) {
             return d.r / 5;
         })
-        .attr("fill", "white");
+        .attr("fill", "white")
+        .attr("opacity", 0);
 
-    node.append("text")
+    parentsEnter.append("text")
         .attr("class", "node-text")
         .attr("dy", "1.3em")
         .style("text-anchor", "middle")
@@ -135,7 +179,24 @@ function drawVis(data) {
         .attr("font-size", function (d) {
             return d.r / 5;
         })
-        .attr("fill", "white");
+        .attr("fill", "white")
+        .attr("opacity", 0);
+
+    parents = parentsEnter.merge(parents)
+    parents.transition().attr("transform", (d, i) => "translate(" + d.x + "," + d.y + ")")
+    parents.select("circle").transition()
+        .delay((d, i) => i * 8)
+        .duration(250)
+        .ease(d3.easeSinOut)
+        .attr("r", function (d) {
+            return d.r;
+        })
+
+    parents.selectAll("text").transition()
+        .delay((d, i) => i * 8)
+        .duration(250)
+        .ease(d3.easeSinOut)
+        .attr("opacity", 1)
 
     d3.select(self.frameElement)
         .style("height", diameter + "px");
@@ -147,4 +208,33 @@ function drawVis(data) {
 
     svg.select("g.node")
         .call(legendOrdinal);
+}
+
+
+function applyFilters() {
+    var data = Object.assign({}, dataset)
+
+    // Year filter
+    data.children = data.children.filter(d => d.Year >= filters.year[0] && d.Year <= filters.year[1])
+        .filter(d => d.Global_Sales >= filters.sales[0] && d.Global_Sales <= filters.sales[1])
+
+    drawVis(data)
+}
+
+function filterType(dataset, mtype) {
+    var data
+    if (mtype === "all") {
+        data = dataset
+    } else {
+        data = dataset.filter(d => d.type == mtype)
+    }
+    return data
+}
+
+function filterVolume(dataset, range) {
+    return dataset.filter(d => d.vol >= range[0] && d.vol <= range[1])
+}
+
+function filterDelta(dataset, range) {
+    return dataset.filter(d => d.delta >= range[0] && d.delta <= range[1])
 }
