@@ -101,9 +101,9 @@ function drawVis(data) {
         .sum(function (d) { return d.Global_Sales; });
 
     let nodeData = bubble(nodes).descendants().filter(d => !d.children)
-
+    console.log(nodeData)
     var parents = svg.selectAll(".node")
-        .data(nodeData, d => d.Rank)
+        .data(nodeData, d => d.data.Rank)
 
     parents.exit()
         .select("circle")
@@ -111,8 +111,9 @@ function drawVis(data) {
         .attr("r", 0)
 
     parents.exit()
-        .select("text")
-        .attr("opacity", 0)
+        .selectAll("text")
+        .transition()
+        .attr("font-size", 0)
 
     parents.exit().transition().remove()
 
@@ -155,32 +156,26 @@ function drawVis(data) {
         })
 
     parentsEnter.append("text")
-        .attr("class", "node-text")
+        .attr("class", "node-text node-name")
         .attr("dy", ".2em")
         .style("text-anchor", "middle")
         .text(function (d) {
             return d.data.Name.substring(0, d.r / 3);
         })
         .attr("font-family", "sans-serif")
-        .attr("font-size", function (d) {
-            return d.r / 5;
-        })
+        .attr("font-size", 0)
         .attr("fill", "white")
-        .attr("opacity", 0);
 
     parentsEnter.append("text")
-        .attr("class", "node-text")
+        .attr("class", "node-text node-rank")
         .attr("dy", "1.3em")
         .style("text-anchor", "middle")
         .text(function (d) {
             return '#' + d.data.Rank;
         })
         .attr("font-family", "Gill Sans", "Gill Sans MT")
-        .attr("font-size", function (d) {
-            return d.r / 5;
-        })
+        .attr("font-size", 0)
         .attr("fill", "white")
-        .attr("opacity", 0);
 
     parents = parentsEnter.merge(parents)
     parents.transition().attr("transform", (d, i) => "translate(" + d.x + "," + d.y + ")")
@@ -192,12 +187,21 @@ function drawVis(data) {
             return d.r;
         })
 
-    parents.selectAll("text").transition()
+    parents.select(".node-name").transition()
         .delay((d, i) => i * 8)
         .duration(250)
         .ease(d3.easeSinOut)
-        .attr("opacity", 1)
+        .attr("font-size", function (d) {
+            return d.r / 5;
+        })
 
+    parents.select(".node-rank").transition()
+        .delay((d, i) => i * 8)
+        .duration(250)
+        .ease(d3.easeSinOut)
+        .attr("font-size", function (d) {
+            return d.r / 5;
+        })
     d3.select(self.frameElement)
         .style("height", diameter + "px");
 
