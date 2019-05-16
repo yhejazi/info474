@@ -229,6 +229,9 @@ function drawVis(data) {
         .attr("r", function (d) {
             return d.r;
         })
+        .style("fill", function (d) {
+            return color(d.data.Publisher);
+        })
 
     parents.select(".node-name").transition()
         .delay((d, i) => i * 8)
