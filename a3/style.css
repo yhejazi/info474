@@ -43,6 +43,10 @@ div.tooltip {
     padding: 1rem;
 }
 
+#legend-container {
+    float: right;
+}
+
 .slider-group {
     text-align: center;
 }

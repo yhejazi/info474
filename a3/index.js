@@ -21,12 +21,13 @@ var tooltip = d3.select("body").append("div")
 
 var svg = d3.select("#visualization")
     .append("svg")
-    .attr("width", diameter)
+    .attr("width", diameter + 200)
     .attr("height", diameter)
     .attr("class", "bubble");
 
 // Define scales
-var color = d3.scaleOrdinal().range(['#f44242', '#52b043', '#0099e5', '#ff9900', '#9f7ded']);
+//var color = d3.scaleOrdinal().range(['#f44242', '#52b043', '#0099e5', '#ff9900', '#9f7ded']);
+var color = d3.scaleOrdinal().range(d3.schemeCategory10.concat(Array(10).fill("#555555")));
 
 // Load data
 d3.csv("vgsales_clipped.csv", function (error, data) {
@@ -64,13 +65,13 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
         .data(genres)
         .enter().append("option")
         .text(d => d)
-        
+
     var platforms = [...new Set(data.map(d => d.Platform))]
     d3.select("#platform").selectAll("option")
         .data(platforms)
         .enter().append("option")
         .text(d => d)
-        
+
     var publishers = [...new Set(data.map(d => d.Publisher))]
     d3.select("#publisher").selectAll("option")
         .data(publishers)
@@ -128,6 +129,17 @@ function drawVis(data) {
     var bubble = d3.pack(dataset)
         .size([diameter, diameter])
         .padding(1.5);
+
+    // Define colors
+    let publishers = {}
+    dataset.children.forEach(d => {
+        if (!publishers[d.Publisher]) {
+            publishers[d.Publisher] = 0
+        }
+        publishers[d.Publisher]++
+    })
+    let sortedPublishers = Object.keys(publishers).sort(function (a, b) { return publishers[b] - publishers[a] })
+    color.domain(sortedPublishers)
 
     var nodes = d3.hierarchy(dataset)
         .sum(function (d) { return d.Global_Sales; });
@@ -237,11 +249,21 @@ function drawVis(data) {
         .style("height", diameter + "px");
 
     // Define the color legend
+    if (sortedPublishers.length > 10) {
+        let pubClip = sortedPublishers.slice(0, 10).concat(Array(10).fill("Other"))
+        color.domain(pubClip)
+    }
     legendOrdinal = d3.legendColor()
         .scale(color)
         .shape('circle')
 
-    svg.select("g.node")
+    svg.select(".legend").exit().remove()
+
+    svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", "translate(500, 400)")
+
+    svg.select(".legend")
         .call(legendOrdinal);
 }
 
@@ -267,22 +289,4 @@ function applyFilters() {
     }
 
     drawVis(data)
-}
-
-function filterType(dataset, mtype) {
-    var data
-    if (mtype === "all") {
-        data = dataset
-    } else {
-        data = dataset.filter(d => d.type == mtype)
-    }
-    return data
-}
-
-function filterVolume(dataset, range) {
-    return dataset.filter(d => d.vol >= range[0] && d.vol <= range[1])
-}
-
-function filterDelta(dataset, range) {
-    return dataset.filter(d => d.delta >= range[0] && d.delta <= range[1])
 }
