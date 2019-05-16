@@ -260,7 +260,7 @@ function drawVis(data) {
         .scale(color)
         .shape('circle')
 
-    svg.select(".legend").exit().remove()
+    svg.select(".legend").remove()
 
     svg.append("g")
         .attr("class", "legend")
