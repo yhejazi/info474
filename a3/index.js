@@ -29,6 +29,9 @@ var svg = d3.select("#visualization")
 // Define scales
 //var color = d3.scaleOrdinal().range(['#f44242', '#52b043', '#0099e5', '#ff9900', '#9f7ded']);
 var color = d3.scaleOrdinal().range(d3.schemeCategory10.concat(Array(10).fill("#555555")));
+var colorCritic = d3.scaleThreshold()
+    .domain([0.1, 50, 75, 90, 100])
+    .range(["gray", "red", "#d0d628", "#61af21", "green"])
 
 // Load data
 d3.csv("vgsales_clipped.csv", function (error, data) {
@@ -121,6 +124,7 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
 
         $("#color").select2().on("change", e => {
             colorBy = $("#color").select2("data")[0].id
+            applyFilters()
         })
     });
 
@@ -136,15 +140,22 @@ function drawVis(data) {
         .padding(1.5);
 
     // Define colors
-    let publishers = {}
-    dataset.children.forEach(d => {
-        if (!publishers[d.Publisher]) {
-            publishers[d.Publisher] = 0
-        }
-        publishers[d.Publisher]++
-    })
-    let sortedPublishers = Object.keys(publishers).sort(function (a, b) { return publishers[b] - publishers[a] })
-    color.domain(sortedPublishers)
+    let colorScale
+    let sortedDomain = []
+    if (colorBy === "Critic_Score") {
+        colorScale = colorCritic
+    } else {
+        let colorCount = {}
+        dataset.children.forEach(d => {
+            if (!colorCount[d[colorBy]]) {
+                colorCount[d[colorBy]] = 0
+            }
+            colorCount[d[colorBy]]++
+        })
+        sortedDomain = Object.keys(colorCount).sort(function (a, b) { return colorCount[b] - colorCount[a] })
+        color.domain(sortedDomain)
+        colorScale = color
+    }
 
     var nodes = d3.hierarchy(dataset)
         .sum(function (d) { return d.Global_Sales; });
@@ -164,10 +175,10 @@ function drawVis(data) {
         .attr("font-size", 0)
 
     parents.exit().transition().remove();
-    
+
     svg.selectAll(".legend").remove();
 
-    if (sortedPublishers.length > 0) {
+    if (sortedDomain.length > 0 || colorBy === "Critic_Score") {
         var parentsEnter = parents.enter()
             .append("g")
             .attr("class", "node")
@@ -178,7 +189,7 @@ function drawVis(data) {
         parentsEnter.append("circle")
             .attr("r", 0)
             .style("fill", function (d) {
-                return color(d.data.Publisher);
+                return colorScale(d.data[colorBy]);
             })
             .attr("stroke-width", 4)
             .on("mouseover", function (d) {
@@ -193,7 +204,7 @@ function drawVis(data) {
 
                 // Add outline to circle
                 d3.select(this).transition()
-                    .attr("stroke", d3.color(color(d.data.Publisher)).darker())
+                    .attr("stroke", d3.color(colorScale(d.data[colorBy])).darker())
             })
             .on("mouseout", function (d) {
                 // Hide tooltip		
@@ -238,7 +249,7 @@ function drawVis(data) {
                 return d.r;
             })
             .style("fill", function (d) {
-                return color(d.data.Publisher);
+                return colorScale(d.data[colorBy]);
             })
 
         parents.select(".node-name").transition()
@@ -260,14 +271,18 @@ function drawVis(data) {
             .style("height", diameter + "px");
 
         // Define the color legend
-        if (sortedPublishers.length > 10) {
-            let pubClip = sortedPublishers.slice(0, 10).concat(Array(10).fill("Other"))
-            color.domain(pubClip)
+        if (sortedDomain.length > 10) {
+            let newDomain = sortedDomain.slice(0, 10).concat(Array(10).fill("Other"))
+            color.domain(newDomain)
         }
 
         legendOrdinal = d3.legendColor()
-            .scale(color)
+            .scale(colorScale)
             .shape('circle')
+        
+        if (colorBy === "Critic_Score") {
+            legendOrdinal.labels(["No data", "< 50", "50 - 74", "75 - 89", "90 - 100"])
+        }
 
         svg.append("g")
             .attr("class", "legend")
