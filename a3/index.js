@@ -272,7 +272,6 @@ function drawVis(data) {
         svg.select(".legend")
             .call(legendOrdinal);
     }
-
 }
 
 
