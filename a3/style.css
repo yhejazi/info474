@@ -16,7 +16,7 @@ div.tooltip {
     font-size: 12px;
 }
 
-.node-text {
+.node-text, #empty {
     pointer-events: none;
     -webkit-touch-callout: none;
     /* iOS Safari */

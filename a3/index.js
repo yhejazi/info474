@@ -28,6 +28,15 @@ var svg = d3.select("#visualization")
     .attr("height", diameter)
     .attr("class", "bubble");
 
+var emptyMsg = d3.select("svg").append("text")
+    .attr("id", "empty")
+    .style("text-anchor", "middle")
+    .attr("transform", "translate(" + diameter * 0.5 + ", " + diameter * 0.5 + ")")
+    .text("No data matching the selected filters!")
+    .attr("font-family", "Roboto", "sans-serif")
+    .attr("font-size", 40)
+    .style("opacity", 0)
+
 // Define scales
 //var color = d3.scaleOrdinal().range(['#f44242', '#52b043', '#0099e5', '#ff9900', '#9f7ded']);
 var color = d3.scaleOrdinal().range(d3.schemeCategory10.concat(Array(10).fill("#555555")));
@@ -360,6 +369,9 @@ function drawVis(data) {
                 elem.trigger("change")
             })
     }
+
+    let shouldShowEmpty = dataset.children.length === 0
+    d3.select("#empty").transition().style("opacity", shouldShowEmpty && 1 || 0)
 }
 
 
