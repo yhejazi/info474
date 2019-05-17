@@ -11,6 +11,7 @@ var filters = {
     publisher: []
 }
 var colorBy = "Publisher"
+var region = "Global_Sales"
 
 // Define the legend
 var legendOrdinal;
@@ -59,8 +60,8 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
     ]
 
     filters.sales = [
-        d3.min(data, d => d.Global_Sales),
-        Math.ceil(d3.max(data, d => d.Global_Sales))
+        d3.min(data, d => d[region]),
+        Math.ceil(d3.max(data, d => d[region]))
     ]
 
     // Add options to selection filters
@@ -113,10 +114,12 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
             filters.genre = $("#genre").select2("data").map(d => d.id)
             applyFilters()
         })
+
         $("#platform").select2().on("change", e => {
             filters.platform = $("#platform").select2("data").map(d => d.id)
             applyFilters()
         })
+
         $("#publisher").select2().on("change", e => {
             filters.publisher = $("#publisher").select2("data").map(d => d.id)
             applyFilters()
@@ -124,6 +127,25 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
 
         $("#color").select2().on("change", e => {
             colorBy = $("#color").select2("data")[0].id
+            applyFilters()
+        })
+
+        $("#region").select2().on("change", e => {
+            region = $("#region").select2("data")[0].id
+
+            filters.sales = [
+                d3.min(data, d => d[region]),
+                Math.ceil(d3.max(data, d => d[region]))
+            ]
+
+            $("#sales").slider({
+                range: true,
+                min: filters.sales[0],
+                max: filters.sales[1],
+                values: filters.sales
+            });
+            $("#salesval").val(filters.sales[0] + " - " + filters.sales[1] + " million")
+            
             applyFilters()
         })
     });
@@ -134,7 +156,8 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
 
 function drawVis(data) {
     // Filter to top
-    let dataset = { children: data.children.sort((a, b) => a.Rank - b.Rank).slice(0, maxBubbles) }
+    let dataset = { children: data.children.slice(0, maxBubbles) }
+    
     var bubble = d3.pack(dataset)
         .size([diameter, diameter])
         .padding(1.5);
@@ -158,7 +181,7 @@ function drawVis(data) {
     }
 
     var nodes = d3.hierarchy(dataset)
-        .sum(function (d) { return d.Global_Sales; });
+        .sum(function (d) { return d[region]; });
 
     let nodeData = bubble(nodes).descendants().filter(d => !d.children)
     var parents = svg.selectAll(".node")
@@ -198,7 +221,7 @@ function drawVis(data) {
                     .duration(200)
                     .style("opacity", .9);
                 // Add information to tooltip
-                tooltip.html(d.data.Name + "<br/>" + d.data.Platform + "<br/>" + d.data.Global_Sales + "M copies<br />" + d.data.Year)
+                tooltip.html(d.data.Name + "<br/>" + d.data.Platform + "<br/>" + d.data[region] + "M copies<br />" + d.data.Year)
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
 
@@ -234,7 +257,7 @@ function drawVis(data) {
             .attr("dy", "1.3em")
             .style("text-anchor", "middle")
             .text(function (d) {
-                return '#' + d.data.Rank;
+                return '#' + (d.data.RegionRank || d.data.Rank);
             })
             .attr("font-family", "Gill Sans", "Gill Sans MT")
             .attr("font-size", 0)
@@ -268,6 +291,9 @@ function drawVis(data) {
             .attr("font-size", function (d) {
                 return d.r / 5;
             })
+            .text(function (d) {
+                return '#' + (d.data.RegionRank || d.data.Rank);
+            })
         d3.select(self.frameElement)
             .style("height", diameter + "px");
 
@@ -280,7 +306,7 @@ function drawVis(data) {
         legendOrdinal = d3.legendColor()
             .scale(colorScale)
             .shape('circle')
-        
+
         if (colorBy === "Critic_Score") {
             legendOrdinal.labels(["No data", "< 50", "50 - 74", "75 - 89", "90 - 100"])
         }
@@ -298,9 +324,12 @@ function drawVis(data) {
 function applyFilters() {
     var data = Object.assign({}, dataset)
 
+    data = { children: data.children.sort((a, b) => b[region] - a[region]) }
+    data.children.forEach((d, i) => d.RegionRank = i + 1)
+    
     // Slider filters
     data.children = data.children.filter(d => d.Year >= filters.year[0] && d.Year <= filters.year[1])
-        .filter(d => d.Global_Sales >= filters.sales[0] && d.Global_Sales <= filters.sales[1])
+        .filter(d => d[region] >= filters.sales[0] && d[region] <= filters.sales[1])
 
     // Selection filters
     if (filters.genre.length > 0) {
