@@ -203,8 +203,9 @@ function drawVis(data) {
                     .style("top", (d3.event.pageY - 28) + "px");
 
                 // Add outline to circle
-                d3.select(this).transition()
-                    .attr("stroke", d3.color(colorScale(d.data[colorBy])).darker())
+                let circ = d3.select(this)
+                circ.transition()
+                    .attr("stroke", d3.color(circ.style("fill")).darker())
             })
             .on("mouseout", function (d) {
                 // Hide tooltip		
