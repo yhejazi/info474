@@ -9,7 +9,7 @@ var filters = {
     genre: [],
     platform: [],
     publisher: [],
-    gamename: ""
+    gamename: []
 }
 var colorBy = "Publisher"
 var region = "Global_Sales"
@@ -146,12 +146,14 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
                 values: filters.sales
             });
             $("#salesval").val(filters.sales[0] + " - " + filters.sales[1] + " million")
-            
+
             applyFilters()
         })
 
-        $("#game").on("change keydown paste input", e => {
-            filters.gamename = e.target.value
+        $("#game").select2({
+            tags: true
+        }).on("change", e => {
+            filters.gamename = $("#game").select2("data").map(d => d.id)
             applyFilters()
         })
     });
@@ -163,7 +165,7 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
 function drawVis(data) {
     // Filter to top
     let dataset = { children: data.children.slice(0, maxBubbles) }
-    
+
     var bubble = d3.pack(dataset)
         .size([diameter, diameter])
         .padding(1.5);
@@ -332,11 +334,10 @@ function applyFilters() {
 
     data = { children: data.children.sort((a, b) => b[region] - a[region]) }
     data.children.forEach((d, i) => d.RegionRank = i + 1)
-    
+
     // Slider filters
     data.children = data.children.filter(d => d.Year >= filters.year[0] && d.Year <= filters.year[1])
         .filter(d => d[region] >= filters.sales[0] && d[region] <= filters.sales[1])
-        .filter(d => d.Name.toLowerCase().includes(filters.gamename.toLowerCase()))
 
     // Selection filters
     if (filters.genre.length > 0) {
@@ -349,6 +350,10 @@ function applyFilters() {
 
     if (filters.publisher.length > 0) {
         data.children = data.children.filter(d => filters.publisher.includes(d.Publisher))
+    }
+
+    if (filters.gamename.length > 0) {
+        data.children = data.children.filter(d => filters.gamename.some(name => d.Name.toLowerCase().includes(name.toLowerCase())))
     }
 
     drawVis(data)
