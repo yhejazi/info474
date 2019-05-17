@@ -27,26 +27,14 @@ div.tooltip {
                                     supported by Chrome and Opera */
 }
 
-
-#visualization {
-    float: left;
-    border-top: 0;
+.slider-group {
     text-align: center;
-    border-right: 0px;
 }
 
 #filters {
-    width: 250px;
-    height: 100vh;
-    float: right;
-    background-color: #eee;
-    padding: 1rem;
+    background-color: #eeeeee;
 }
 
-#legend-container {
-    float: right;
-}
-
-.slider-group {
-    text-align: center;
+#options {
+    margin-bottom: 2rem;
 }

@@ -10,6 +10,7 @@ var filters = {
     platform: [],
     publisher: []
 }
+var colorBy = "Publisher"
 
 // Define the legend
 var legendOrdinal;
@@ -116,6 +117,10 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
         $("#publisher").select2().on("change", e => {
             filters.publisher = $("#publisher").select2("data").map(d => d.id)
             applyFilters()
+        })
+
+        $("#color").select2().on("change", e => {
+            colorBy = $("#color").select2("data")[0].id
         })
     });
 
@@ -240,6 +245,7 @@ function drawVis(data) {
         .attr("font-size", function (d) {
             return d.r / 5;
         })
+        .attr("dy", ".2em")
 
     parents.select(".node-rank").transition()
         .delay((d, i) => i * 8)
@@ -248,6 +254,8 @@ function drawVis(data) {
         .attr("font-size", function (d) {
             return d.r / 5;
         })
+        .attr("dy", "1.3em")
+
     d3.select(self.frameElement)
         .style("height", diameter + "px");
 

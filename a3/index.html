@@ -19,36 +19,52 @@
 
 <body>
     <div id="layout">
-        <div id="title">
-            <h1>Top Video Games by Units Sold</h1>
-        </div>
-        <div id="visualization">
-            <script src="index.js"></script>
-        </div>
-        <div id="filters">
-            <h2>Filters</h2>
-
-            <label for="yearval">Year</label>
-            <div class="slider-group">
-                <input type="text" id="yearval" readonly style="border:0;color:#f6931f; font-weight: bold">
-                <div id="year" class="slider-range"></div>
+        <div class="row">
+            <div id="visualization" class="column column-80">
+                <div id="title">
+                    <h1>Top Video Games by Units Sold</h1>
+                </div>
+                <script src="index.js"></script>
             </div>
+            <div id="filters" class="column column-20">
+                <div id="options">
+                    <h2>Options</h2>
+                    <label for="color">Color by</label>
+                    <select id="color" name="color">
+                        <option value="Publisher">Publisher</option>
+                        <option value="Genre">Genre</option>
+                        <option value="Platform">Platform</option>
+                        <option value="Critic_Score">Critic Score</option>
+                    </select>
+                </div>
 
-            <p>
-                <label for="salesval">Sales</label>
-                <input type="text" id="salesval" readonly style="border:0;color:#f6931f; font-weight: bold">
-            </p>
-            <div id="sales" class="slider-range"></div>
+                <div class="block">
+                    <h2>Filters</h2>
 
-            <label for="genre">Genres</label>
-            <select id="genre" name="genre[]" multiple="multiple"></select>
+                    <label for="yearval">Year</label>
+                    <div class="slider-group">
+                        <input type="text" id="yearval" readonly style="border:0;color:#f6931f; font-weight: bold">
+                        <div id="year" class="slider-range"></div>
+                    </div>
 
-            <label for="platform">Platforms</label>
-            <select id="platform" name="platform[]" multiple="multiple"></select>
+                    <p>
+                        <label for="salesval">Sales</label>
+                        <input type="text" id="salesval" readonly style="border:0;color:#f6931f; font-weight: bold">
+                    </p>
+                    <div id="sales" class="slider-range"></div>
 
-            <label for="publisher">Publisher</label>
-            <select id="publisher" name="publisher[]" multiple="multiple"></select>
+                    <label for="genre">Genres</label>
+                    <select id="genre" name="genre[]" multiple="multiple"></select>
+
+                    <label for="platform">Platforms</label>
+                    <select id="platform" name="platform[]" multiple="multiple"></select>
+
+                    <label for="publisher">Publisher</label>
+                    <select id="publisher" name="publisher[]" multiple="multiple"></select>
+                </div>
+            </div>
         </div>
+    </div>
 </body>
 
 </html>
