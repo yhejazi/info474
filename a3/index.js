@@ -260,7 +260,6 @@ function drawVis(data) {
             color.domain(pubClip)
         }
 
-
         legendOrdinal = d3.legendColor()
             .scale(color)
             .shape('circle')
