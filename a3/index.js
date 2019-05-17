@@ -339,17 +339,25 @@ function drawVis(data) {
                 d3.selectAll(".node circle").transition("legend").style("opacity", 1)
             })
             .on("mousedown", function (val) {
+                let elem
                 switch (colorBy) {
                     case "Publisher":
-                        $("#publisher").val([val]).trigger("change")
+                        elem = $("#publisher")
                         break
                     case "Genre":
-                        $("#genre").val([val]).trigger("change")
+                        elem = $("#genre")
                         break
                     case "Platform":
-                        $("#platform").val([val]).trigger("change")
+                        elem = $("#platform")
                         break
                 }
+
+                if (elem.select2("data").map(d => d.id).join(',') === val) {
+                    elem.val([])
+                } else {
+                    elem.val([val])
+                }
+                elem.trigger("change")
             })
     }
 }
