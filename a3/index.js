@@ -8,7 +8,8 @@ var filters = {
     sales: [0, 0],
     genre: [],
     platform: [],
-    publisher: []
+    publisher: [],
+    gamename: ""
 }
 var colorBy = "Publisher"
 var region = "Global_Sales"
@@ -146,6 +147,11 @@ d3.csv("vgsales_clipped.csv", function (error, data) {
             });
             $("#salesval").val(filters.sales[0] + " - " + filters.sales[1] + " million")
             
+            applyFilters()
+        })
+
+        $("#game").on("change keydown paste input", e => {
+            filters.gamename = e.target.value
             applyFilters()
         })
     });
@@ -330,6 +336,7 @@ function applyFilters() {
     // Slider filters
     data.children = data.children.filter(d => d.Year >= filters.year[0] && d.Year <= filters.year[1])
         .filter(d => d[region] >= filters.sales[0] && d[region] <= filters.sales[1])
+        .filter(d => d.Name.toLowerCase().includes(filters.gamename.toLowerCase()))
 
     // Selection filters
     if (filters.genre.length > 0) {
