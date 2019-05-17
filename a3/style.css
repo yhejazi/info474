@@ -75,3 +75,7 @@ input {
     width: 100% !important;
     margin-bottom: 1.5rem;
 }
+
+.cell {
+    cursor: pointer;
+}

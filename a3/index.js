@@ -33,7 +33,7 @@ var svg = d3.select("#visualization")
 var color = d3.scaleOrdinal().range(d3.schemeCategory10.concat(Array(10).fill("#555555")));
 var colorCritic = d3.scaleThreshold()
     .domain([0.1, 50, 75, 90, 100])
-    .range(["gray", "red", "#d0d628", "#61af21", "green"])
+    .range(["gray", "red", "#e0cd3a", "#61af21", "green"])
 
 // Load data
 d3.csv("vgsales_clipped.csv", function (error, data) {
@@ -325,6 +325,32 @@ function drawVis(data) {
 
         svg.select(".legend")
             .call(legendOrdinal);
+
+        svg.selectAll(".cell")
+            .on("mouseover", function (val) {
+                d3.selectAll(".node circle").transition("legend").style("opacity", function (d) {
+                    if (colorBy === "Critic_Score") {
+                        return d3.select(this).style("fill") !== '' + d3.color(val) && 0.3 || 1
+                    }
+                    return d.data[colorBy] !== val && 0.3 || 1
+                })
+            })
+            .on("mouseout", function (val) {
+                d3.selectAll(".node circle").transition("legend").style("opacity", 1)
+            })
+            .on("mousedown", function (val) {
+                switch (colorBy) {
+                    case "Publisher":
+                        $("#publisher").val([val]).trigger("change")
+                        break
+                    case "Genre":
+                        $("#genre").val([val]).trigger("change")
+                        break
+                    case "Platform":
+                        $("#platform").val([val]).trigger("change")
+                        break
+                }
+            })
     }
 }
 
