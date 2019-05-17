@@ -22,7 +22,7 @@ var tooltip = d3.select("body").append("div")
 
 var svg = d3.select("#visualization")
     .append("svg")
-    .attr("width", diameter + 200)
+    .attr("width", "100%")
     .attr("height", diameter)
     .attr("class", "bubble");
 
@@ -163,119 +163,119 @@ function drawVis(data) {
         .transition()
         .attr("font-size", 0)
 
-    parents.exit().transition().remove()
+    parents.exit().transition().remove();
+    
+    svg.selectAll(".legend").remove();
 
-    var parentsEnter = parents.enter()
-        .append("g")
-        .attr("class", "node")
-        .attr("transform", function (d) {
-            return "translate(" + d.x + "," + d.y + ")";
-        });
+    if (sortedPublishers.length > 0) {
+        var parentsEnter = parents.enter()
+            .append("g")
+            .attr("class", "node")
+            .attr("transform", function (d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
 
-    parentsEnter.append("circle")
-        .attr("r", 0)
-        .style("fill", function (d) {
-            return color(d.data.Publisher);
-        })
-        .attr("stroke-width", 4)
-        .on("mouseover", function (d) {
-            // Display tooltip
-            tooltip.transition()
-                .duration(200)
-                .style("opacity", .9);
-            // Add information to tooltip
-            tooltip.html(d.data.Name + "<br/>" + d.data.Platform + "<br/>" + d.data.Global_Sales + "M copies<br />" + d.data.Year)
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
+        parentsEnter.append("circle")
+            .attr("r", 0)
+            .style("fill", function (d) {
+                return color(d.data.Publisher);
+            })
+            .attr("stroke-width", 4)
+            .on("mouseover", function (d) {
+                // Display tooltip
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                // Add information to tooltip
+                tooltip.html(d.data.Name + "<br/>" + d.data.Platform + "<br/>" + d.data.Global_Sales + "M copies<br />" + d.data.Year)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
 
-            // Add outline to circle
-            d3.select(this).transition()
-                .attr("stroke", d3.color(color(d.data.Publisher)).darker())
-        })
-        .on("mouseout", function (d) {
-            // Hide tooltip		
-            tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
+                // Add outline to circle
+                d3.select(this).transition()
+                    .attr("stroke", d3.color(color(d.data.Publisher)).darker())
+            })
+            .on("mouseout", function (d) {
+                // Hide tooltip		
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
 
-            // Remove outline
-            d3.select(this).transition()
-                .attr("stroke", "transparent")
-        })
+                // Remove outline
+                d3.select(this).transition()
+                    .attr("stroke", "transparent")
+            })
 
-    parentsEnter.append("text")
-        .attr("class", "node-text node-name")
-        .attr("dy", ".2em")
-        .style("text-anchor", "middle")
-        .text(function (d) {
-            return d.data.Name.substring(0, d.r / 3);
-        })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", 0)
-        .attr("fill", "white")
+        parentsEnter.append("text")
+            .attr("class", "node-text node-name")
+            .attr("dy", ".2em")
+            .style("text-anchor", "middle")
+            .text(function (d) {
+                return d.data.Name.substring(0, d.r / 3);
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 0)
+            .attr("fill", "white")
 
-    parentsEnter.append("text")
-        .attr("class", "node-text node-rank")
-        .attr("dy", "1.3em")
-        .style("text-anchor", "middle")
-        .text(function (d) {
-            return '#' + d.data.Rank;
-        })
-        .attr("font-family", "Gill Sans", "Gill Sans MT")
-        .attr("font-size", 0)
-        .attr("fill", "white")
+        parentsEnter.append("text")
+            .attr("class", "node-text node-rank")
+            .attr("dy", "1.3em")
+            .style("text-anchor", "middle")
+            .text(function (d) {
+                return '#' + d.data.Rank;
+            })
+            .attr("font-family", "Gill Sans", "Gill Sans MT")
+            .attr("font-size", 0)
+            .attr("fill", "white")
 
-    parents = parentsEnter.merge(parents)
-    parents.transition().attr("transform", (d, i) => "translate(" + d.x + "," + d.y + ")")
-    parents.select("circle").transition()
-        .delay((d, i) => i * 8)
-        .duration(250)
-        .ease(d3.easeSinOut)
-        .attr("r", function (d) {
-            return d.r;
-        })
-        .style("fill", function (d) {
-            return color(d.data.Publisher);
-        })
+        parents = parentsEnter.merge(parents)
+        parents.transition().attr("transform", (d, i) => "translate(" + d.x + "," + d.y + ")")
+        parents.select("circle").transition()
+            .delay((d, i) => i * 8)
+            .duration(250)
+            .ease(d3.easeSinOut)
+            .attr("r", function (d) {
+                return d.r;
+            })
+            .style("fill", function (d) {
+                return color(d.data.Publisher);
+            })
 
-    parents.select(".node-name").transition()
-        .delay((d, i) => i * 8)
-        .duration(250)
-        .ease(d3.easeSinOut)
-        .attr("font-size", function (d) {
-            return d.r / 5;
-        })
-        .attr("dy", ".2em")
+        parents.select(".node-name").transition()
+            .delay((d, i) => i * 8)
+            .duration(250)
+            .ease(d3.easeSinOut)
+            .attr("font-size", function (d) {
+                return d.r / 5;
+            })
 
-    parents.select(".node-rank").transition()
-        .delay((d, i) => i * 8)
-        .duration(250)
-        .ease(d3.easeSinOut)
-        .attr("font-size", function (d) {
-            return d.r / 5;
-        })
-        .attr("dy", "1.3em")
+        parents.select(".node-rank").transition()
+            .delay((d, i) => i * 8)
+            .duration(250)
+            .ease(d3.easeSinOut)
+            .attr("font-size", function (d) {
+                return d.r / 5;
+            })
+        d3.select(self.frameElement)
+            .style("height", diameter + "px");
 
-    d3.select(self.frameElement)
-        .style("height", diameter + "px");
+        // Define the color legend
+        if (sortedPublishers.length > 10) {
+            let pubClip = sortedPublishers.slice(0, 10).concat(Array(10).fill("Other"))
+            color.domain(pubClip)
+        }
 
-    // Define the color legend
-    if (sortedPublishers.length > 10) {
-        let pubClip = sortedPublishers.slice(0, 10).concat(Array(10).fill("Other"))
-        color.domain(pubClip)
+        legendOrdinal = d3.legendColor()
+            .scale(color)
+            .shape('circle')
+
+        svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", "translate(500, 400)")
+
+        svg.select(".legend")
+            .call(legendOrdinal);
     }
-    legendOrdinal = d3.legendColor()
-        .scale(color)
-        .shape('circle')
-
-    svg.select(".legend").remove()
-
-    svg.append("g")
-        .attr("class", "legend")
-        .attr("transform", "translate(500, 400)")
-
-    svg.select(".legend")
-        .call(legendOrdinal);
 }
 
 
