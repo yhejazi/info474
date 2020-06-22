@@ -1,0 +1,117 @@
+[meta title:"The Doppler Effect" description:"An explorable explanation of the Doppler effect and its applications." /]
+
+[Header
+  fullWidth:true
+  title:"The Doppler Effect"
+  author:"Joseph Chou, Yasmine Hejazi, and Vanessa Hsu"
+  date:`(new Date()).toDateString()`
+  background:"#222222"
+  color:"#ffffff"
+   /]
+
+[section className:"article-body"]
+
+## What's the Doppler effect?
+Have you ever heard the high-pitched sound of a siren approaching you and noticed how the sound dropped in pitch when it passed? This phenomenon is known as the Doppler effect. We observe the Doppler effect whenever the source of the waves we are observing (sound or light) moves. When the source is approaching, we experience an increase in frequency and vice versa when the source is receding. However, there is not actually a change in the frequency of the source, it just appears to change as the source moves to and away from us.
+
+## Waves in Motion
+Here, we have a stationary object (the blue circle) giving off sound waves (the gray rings). We can see that at all points, the distance between waves is equal as they travel outwards, so we would hear the same pitch no matter where we are relative to the object.
+
+[WaveBox/]
+
+
+
+What happens if the source of the sound starts to move? Click anywhere in the box below to make the source move in that direction.
+
+[InteractiveWaveBox/]
+
+We can see that the waves get clustered together in front of the object, and they spread apart farther behind the object. In practice, this means that the observed **frequency** in front of the object is higher, resulting in a higher-pitched sound. Likewise, the observed frequency behind the object is lower, resulting in a lower-pitched sound.
+
+
+[var name:"showMath" value:false/]
+[boolean value:showMath/] Show me the math!
+[Conditional if:`showMath`]
+[var name:"frequency" value:440 /]
+[var name:"velocity" value:50 /]
+
+The formula for the Doppler effect is 
+[Equation]
+  f = (\frac{c + v_r}{c + v_s}) f_0
+[/Equation]
+, where 
+[Equation]f[/Equation] 
+is the observed frequency, 
+[Equation]f_0[/Equation] 
+is the original frequency, 
+[Equation]c[/Equation] 
+is the speed of the wave, 
+[Equation]v_s[/Equation] 
+is the velocity of the source, and 
+[Equation]v_s[/Equation] 
+is the velocity of the receiver.
+
+For example, if we have sound waves that travel at 343 meters per second, a stationary receiver, and a source emitting waves at frequency 
+[Dynamic value:frequency min:100 max:2000 /]
+Hz moving at 
+[Dynamic value:velocity min:-300 max:300 /] 
+meters per second ([Display value:`velocity >= 0 ? "towards" : "away from"`/] the receiver), the perceieved frequency would be [Display value:`frequency * 343 / (343 - velocity)`/] Hz.
+
+[/Conditional]
+
+## Doppler effect on sound
+The most common example of the Doppler effect is the sound of an object passing by quickly, like a car honking.
+A car passing by fast and honking will have a high pitch as it approaches, and a lower pitch as it passes by.
+In contrast, a car moving slowly and honking will have no perceived change in pitch.
+
+[CarPassing/]
+
+## Redshift and Blueshift 
+The Doppler effect applies not only to sound waves, but to light waves as well. ***Redshift*** and ***blueshift*** describe how light shifts toward longer and shorter wavelengths as objects in space move closer and farther away from us. Because of this, when an object moves away from us, the light will decrease in frequency, shifting to the red end of the spectrum. When an object moves towards us, the light will increase in frequency, shifting to the blue end of the spectrum.
+
+[RedshiftBlueshift/]
+
+Redshift and blueshift have many applications in astronomy, primarily to detect the movements of objects. 
+For example, it can be used to tell if stars have planets around them - planets and stars orbit a common center of mass, so stars with planets around them slightly move, which can be detected by measuring their redshift and blueshift. It can also be used to calculate how far away distant galaxies are, as the further a galaxy is, the more redshifted it is.
+
+## Test Your Knowledge
+[var name:"redshift" value:`Math.random() >= 0.5` /]
+[var name:"change" value:`Math.floor(Math.random() * 25) + 50` /]
+[var name:"hue" value:`Math.floor(Math.random() * (255 - change)) + redshift ? change : 0` /]
+[var name:"userChoice" value:null /]
+[var name:"correctAnswer" value:null /]
+[var name:"hasAnswered" value:false/]
+
+Hover over the star to change the perceived frequency.
+
+[QuizHover direction:`redshift ? -1 : 1` hue:`hue` change:`change`/]
+
+
+[Conditional if:`!hasAnswered`]
+Which direction is this star moving relative to the observer?
+  [Radio value:userChoice options:`["Towards", "Away"]`  /]
+  [button onClick:`
+    if (userChoice === "Towards" || userChoice === "Away") {
+      correctAnswer = userChoice === (redshift ? "Away" : "Towards")
+      hasAnswered = true
+    }
+  `]Submit[/button]
+[/Conditional]
+
+[Conditional if:`hasAnswered`]
+  [Conditional if:`correctAnswer`]**Correct!**[/Conditional]
+  [Conditional if:`!correctAnswer`]**Incorrect.**[/Conditional]
+
+  [Conditional if:`redshift`]The star is moving away from the observer, so it undergoes **redshift** and the perceived frequency is lower.[/Conditional]
+  [Conditional if:`!redshift`]The star is moving towards the observer, so it undergoes **blueshift** and the perceived frequency is higher.[/Conditional]
+
+  [button onClick:`
+    userChoice = null
+    correctAnswer = null
+    hasAnswered = false
+    redshift = Math.random() >= 0.5
+    change = Math.floor(Math.random() * 25) + 50
+    hue = Math.floor(Math.random() * (255 - change)) + redshift ? change : 0
+  `]Reset[/button]
+[/Conditional]
+
+[/section]

@@ -1,5 +1,11 @@
 # EDA of McDonald's Nutrition Facts
 
+In this project, I had to formulate and answer a series of specific questions about a data set I chose about McDonald's nutrition facts. For each iteration of the question, I created a visualization that tries to answer the question. After answering the questions, I created a final visualization that is designed to provide the most informative answer to the questions I asked. The process of this project is summarized in the following steps:
+
+1. Pick a domain that you are interested in.
+2. Pose an initial question that you would like to answer.
+3. Assess the fitness of the data for answering your question.
+
 ## About the Data
 
 [McDonald's NutritionFacts data source](https://github.com/pffy/data-McDonalds-nutritionfacts)
