@@ -11,7 +11,7 @@ The values in the table represent the minimum inhibitory concentration (MIC), a 
 
 ## Write Up
 
-![Antibiotics Viz](antibiotics.png)
+![Antibiotics Viz](antibiotic.png)
 
 This visualization shows the relationship between MIC of antibiotic and gram staining for each bacteria tested in this dataset. I have created a vertical bar chart with 2 levels, gram staining and then bacteria, and have broken down the y axis to show iterations of these measures by the 3 antibiotics tested.
 
