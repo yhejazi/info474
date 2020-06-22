@@ -1,6 +1,6 @@
 # Project 3: Creating Interactive Visualization Software
 
-In this project, I explored the issues involved in implementing interactive visualization software. I was given a choice on the data domain as well as the techniques I wished to implement. I chose to implement the interactive technique of a bubble chart using Javascript and D3 in order to allow exploration of video game sales. The goal with this project is not only to gain hands-on experience implementing a visualization technique, but also to think about the effectiveness of the specific visualization techniques re-implemented in the context of the data domain.
+In this project, we explored the issues involved in implementing interactive visualization software. We were given a choice on the data domain as well as the techniques we wished to implement. We chose to implement the interactive technique of a bubble chart using Javascript and D3 in order to allow exploration of video game sales. The goal with this project is not only to gain hands-on experience implementing a visualization technique, but also to think about the effectiveness of the specific visualization techniques re-implemented in the context of the data domain.
 
 ## Deliverables
 1. Describe the data domain and storyboard interactive visualization techniques used.
