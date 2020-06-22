@@ -12,9 +12,9 @@ In this project, I had to formulate and answer a series of specific questions ab
 ## Project 3: Creating Interactive Visualization Software
 In this project, I explored the issues involved in implementing interactive visualization software. I chose to implement the interactive technique of a bubble chart using Javascript and D3 in order to allow exploration of video game sales. The goal with this project is not only to gain hands-on experience implementing a visualization technique, but also to think about the effectiveness of the specific visualization techniques re-implemented in the context of the data domain.
 
-[Project site](https://yhejazi.github.io/info474/a3/index.html)
+[Project 3 site](https://yhejazi.github.io/info474/a3/index.html)
 
 ## Final Project
 We implemented an [explorable explanation](https://explorabl.es/) that uses interactive visualization, animation, and text to help people understand a complex process or phenomena (in our case, the Doppler Effect).
 
-[Project site](https://jchou8.github.io/doppler-effect/)
+[Final project site](https://jchou8.github.io/doppler-effect/)
